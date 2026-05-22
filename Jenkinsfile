@@ -27,12 +27,6 @@ pipeline {
             }
         }
 
-        stage('Build Spring PetClinic') {
-            steps {
-                sh '''
-                    mvn clean install
-                '''
-            }
         }
     }
 
