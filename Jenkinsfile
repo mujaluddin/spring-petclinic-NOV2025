@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        jdk 'JAVA-21'
-        maven 'MAVEN-3.9.16'
+        jdk 'jdk21'
+        maven 'maven'
     }
 
     stages {
@@ -23,7 +23,7 @@ pipeline {
 
     post {
         success {
-            echo 'Build completed successfully'
+            echo 'Build successful'
         }
 
         failure {
