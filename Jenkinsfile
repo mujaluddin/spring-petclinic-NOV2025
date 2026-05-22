@@ -1,68 +1,48 @@
 pipeline {
     agent any
 
-    tools {
-        maven 'Maven'
-    }
-
     environment {
-        APP_NAME = "spring-petclinic"
+        JAVA_HOME = "/usr/lib/jvm/java-21-openjdk-amd64"
+        MAVEN_HOME = "/opt/maven/apache-maven-3.9.16"
+        PATH = "${JAVA_HOME}/bin:${MAVEN_HOME}/bin:${env.PATH}"
     }
 
     stages {
 
         stage('Checkout Code') {
             steps {
-                git branch: 'main',
-                url: 'https://github.com/mujaluddin/spring-petclinic-NOV2025.git'
+                git 'https://github.com/mujaluddin/spring-petclinic-NOV2025.git'
             }
         }
 
-        stage('Verify Java & Maven') {
+        stage('Verify Tools') {
             steps {
                 sh '''
-                java -version
-                mvn -version
+                    echo "Java Version:"
+                    java -version
+
+                    echo "Maven Version:"
+                    mvn -version
                 '''
             }
         }
 
-        stage('Clean Project') {
+        stage('Build Spring PetClinic') {
             steps {
-                sh 'mvn clean'
-            }
-        }
-
-        stage('Build Application') {
-            steps {
-                sh 'mvn clean install -DskipTests'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'mvn test'
-            }
-        }
-
-        stage('Archive Artifact') {
-            steps {
-                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+                sh '''
+                    mvn clean install
+                '''
             }
         }
     }
 
     post {
-        always {
-            echo 'Pipeline execution completed'
-        }
-
         success {
-            echo 'Spring PetClinic build successful'
+            echo 'Spring PetClinic build completed successfully'
         }
 
         failure {
-            echo 'Build failed. Please check console logs.'
+            echo 'Build failed'
         }
     }
 }
